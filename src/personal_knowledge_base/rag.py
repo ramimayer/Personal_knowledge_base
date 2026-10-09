@@ -16,6 +16,7 @@ class static_vars:
     SPARSE_EMBEDDING_MODEL = "Qdrant/bm25"
     COLLECTION_NAME = "company_simulator_docs"
     URL = "https://openrouter.ai/api/v1"
+    # RAG_ERRORS = ["RAG: can't find retriever!"]
 
     @property
     def openrouter_api_key(self):
@@ -64,6 +65,13 @@ def _create_retriever():
     API_KEY = s.openrouter_api_key
     embeddings = OpenAIEmbeddings(api_key=API_KEY, base_url=s.URL, model=s.EMBEDDING_MODEL)
 
+    print("\ncreate_retriever(): QDRANT_DB_PATH = " + s.QDRANT_DB_PATH + "\n")
+    # qdrant_db_exists = True
+    # if not os.path.exists(s.QDRANT_DB_PATH):
+    #     qdrant_db_exists = False
+    #     print("\ncreate_retriever(): QDRANT_DB_PATH = " + s.QDRANT_DB_PATH + "\n")
+    
+
     # step 2:   Vektor-Store erstellen
     vectorstore = QdrantVectorStore.from_existing_collection(
         embedding=embeddings,
@@ -110,6 +118,9 @@ def answer(query: str) -> str:
     print("create_rag_chain(): query = " + query)
 
     API_KEY, retriever = _create_retriever()
+    # if (qdb_exists == False):
+    #     return "ERROR: qdrant_db file doesn't exist!", False
+    #     print("\ncreate_retriever(): QDRANT_DB_PATH = " + s.QDRANT_DB_PATH + "\n")
 
     # step 4:  Dokumente formatieren
     docs_found = retriever.invoke(query)

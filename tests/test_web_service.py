@@ -6,6 +6,10 @@ import os
 from pathlib import Path
 import shutil
 
+from fastapi.testclient import TestClient
+from personal_knowledge_base.web_service import rag
+client = TestClient(rag)
+
 #  shell-command:  pytest .\test_web_service.py -W ignore::DeprecationWarning --cov=../src --cov-report term-missing
 
 # gobal parameters for tests-parametrization
@@ -61,7 +65,7 @@ def delete_created_folders():
 
 
 def test_save_attachments(email, folder, save_folder, expected):
-    response = requests.get(f"http://localhost:8000/save_attachments?username={email}&email_folder={folder}&save_folder={save_folder}")
+    response = client.get(f"http://localhost:8000/save_attachments?username={email}&email_folder={folder}&save_folder={save_folder}")
     in_range = lambda x, min, max : (x >= min   and   x <max)
     assert(in_range(response.status_code, 200, 250) == expected)
 
@@ -81,7 +85,7 @@ def test_save_attachments(email, folder, save_folder, expected):
     # (EMPTY_STR,         NON_VALID_FOLDER,       VALID_SAVE_FOLDER_TEXTS,      False),
 ])
 def test_save_texts(email, folder, save_folder, expected):
-    response = requests.get(f"http://localhost:8000/save_texts?username={email}&email_folder={folder}&save_folder={save_folder}")
+    response = client.get(f"http://localhost:8000/save_texts?username={email}&email_folder={folder}&save_folder={save_folder}")
     in_range = lambda x, min, max : (x >= min   and   x <max)
     assert(in_range(response.status_code, 200, 250) == expected)
 
@@ -92,7 +96,7 @@ def test_save_texts(email, folder, save_folder, expected):
     # ("test_attachments_new", True),
 ])
 def test_create_vectorestore(docs_folder, expected):
-    response = requests.get(f"http://localhost:8000/create_vectorestore/{docs_folder}")
+    response = client.get(f"http://localhost:8000/create_vectorestore/{docs_folder}")
     in_range = lambda x, min, max : (x >= min   and   x <max)
     assert(in_range(response.status_code, 200, 250) == expected)
 
@@ -125,7 +129,7 @@ def all_expected_words_in_answer(expected: list, answer: str) -> bool:
     ("can a child fly the plane?", NOT_IN_MY_DOCS_MSG),
 ])
 def test_query_rag(query, expected):
-    response = requests.get(f"http://localhost:8000/query_rag/{query}")
+    response = client.get(f"http://localhost:8000/query_rag/{query}")
     
 
     print("test_query_rag(): status_code = " + str(response.status_code))
@@ -135,6 +139,8 @@ def test_query_rag(query, expected):
 
     j = response.json()
     answer = str(j["answer"])
+    # ret_code = j["rc"] 
+    # assert(ret_code != False)
 
     # check for a string that we know doesn't exist in the answere
     find_bad = answer.find("blablabla_its_not_a_reasonable_string")

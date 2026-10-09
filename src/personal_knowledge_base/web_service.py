@@ -75,6 +75,12 @@ def query_rag(query: Annotated[str, Path(min_length=1)]):
     answer = personal_knowledge_base.rag.answer(query)
     return {"answer": answer}
 
+    # answer, rc = personal_knowledge_base.rag.answer(query)
+    # if (rc == False):
+    #     raise RuntimeError(answer)
+
+    # return {"answer": answer, "rc": rc}
+
 
 # usage:   http://localhost:8000/create_vectorestore/foldername
 @rag.get("/create_vectorestore/{docs_folder}")
