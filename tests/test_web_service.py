@@ -139,12 +139,14 @@ def test_query_rag(query, expected):
 
     j = response.json()
     answer = str(j["answer"])
-    # ret_code = j["rc"] 
-    # assert(ret_code != False)
+    ret_code = j["rc"] 
+    print("test_query_rag(): ret_code = " + str(ret_code))
+    assert(ret_code != False)
 
     # check for a string that we know doesn't exist in the answere
     find_bad = answer.find("blablabla_its_not_a_reasonable_string")
     assert(find_bad == -1)
 
     found_in_answer = all_expected_words_in_answer(expected, answer)
+    print("test_query_rag(): found_in_answer = " + str(found_in_answer))
     assert(found_in_answer == (expected[-1]))

@@ -16,7 +16,6 @@ class static_vars:
     SPARSE_EMBEDDING_MODEL = "Qdrant/bm25"
     COLLECTION_NAME = "company_simulator_docs"
     URL = "https://openrouter.ai/api/v1"
-    # RAG_ERRORS = ["RAG: can't find retriever!"]
 
     @property
     def openrouter_api_key(self):
@@ -66,11 +65,8 @@ def _create_retriever():
     embeddings = OpenAIEmbeddings(api_key=API_KEY, base_url=s.URL, model=s.EMBEDDING_MODEL)
 
     print("\ncreate_retriever(): QDRANT_DB_PATH = " + s.QDRANT_DB_PATH + "\n")
-    # qdrant_db_exists = True
-    # if not os.path.exists(s.QDRANT_DB_PATH):
-    #     qdrant_db_exists = False
-    #     print("\ncreate_retriever(): QDRANT_DB_PATH = " + s.QDRANT_DB_PATH + "\n")
-    
+    if not os.path.exists(s.QDRANT_DB_PATH):
+        return API_KEY, None
 
     # step 2:   Vektor-Store erstellen
     vectorstore = QdrantVectorStore.from_existing_collection(
@@ -84,7 +80,7 @@ def _create_retriever():
 
     # step 3:  Retriever erstellen
     retriever = vectorstore.as_retriever(search_kwargs={"k": 2})
-    return API_KEY,retriever
+    return API_KEY, retriever
 
 
 #----------------------------------------------------------------------------------------
@@ -114,13 +110,12 @@ def _build_prompt():
 #----------------------------------------------------------------------------------------
 # param: query - the question to be answered
 # return: the answer to the question, based on the documents in the QdrantVector
-def answer(query: str) -> str:
+def answer(query: str):
     print("create_rag_chain(): query = " + query)
 
     API_KEY, retriever = _create_retriever()
-    # if (qdb_exists == False):
-    #     return "ERROR: qdrant_db file doesn't exist!", False
-    #     print("\ncreate_retriever(): QDRANT_DB_PATH = " + s.QDRANT_DB_PATH + "\n")
+    if (retriever == None):
+        return "ERROR: no retriever, probably qdrant_db file doesn't exist!", False      
 
     # step 4:  Dokumente formatieren
     docs_found = retriever.invoke(query)
@@ -154,6 +149,6 @@ def answer(query: str) -> str:
     # step 8:  RAG-Chain ausführen
     answer = rag_chain.invoke(query)
     print("Answer: " + answer)
-    return answer
+    return answer, True
 
 
