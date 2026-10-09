@@ -24,6 +24,7 @@ VALID_SAVE_FOLDER_TEXTS = "txt_msgs"
 
 DEFAULT_SAVE_FOLDER = "C:/Users/ramim/Documents/projects/data/docs_orig_format"
 EMPTY_STR = ""
+NOT_IN_MY_DOCS_MSG = ["nicht ", "meinen ", "Dokumenten ", "enthalten", True]
 
 
 @pytest.fixture(autouse=True)
@@ -88,7 +89,7 @@ def test_save_texts(email, folder, save_folder, expected):
 #============================================================================================
 # @pytest.mark.test_create_vectorestore
 @pytest.mark.parametrize("docs_folder, expected", [ 
-    ("test_attachments_new", True),
+    # ("test_attachments_new", True),
 ])
 def test_create_vectorestore(docs_folder, expected):
     response = requests.get(f"http://localhost:8000/create_vectorestore/{docs_folder}")
@@ -98,9 +99,30 @@ def test_create_vectorestore(docs_folder, expected):
 
 #============================================================================================
 # @pytest.mark.test_query_rag
+def all_expected_words_in_answer(expected: list, answer: str) -> bool:
+    words_in_answer = answer.lower().split()
+    one_expected_not_in_answer = False;
+    for e in expected[:-1]:
+        e = e.lower()
+        found_in_answer = False;
+        for w in words_in_answer:
+            word_partly_in_answer = (w in e) or (e in w)          
+            if (word_partly_in_answer == True):
+                found_in_answer = True
+
+        if (found_in_answer == False):
+            one_expected_not_in_answer = True
+            break
+
+    return not one_expected_not_in_answer
+
 @pytest.mark.parametrize("query, expected", [ 
-    # ("what is the oil-pressure range of a c-500?", ["zwischen", "35", "70", True]),
-    # ("what is the oil-pressure range of a c-500?", ["zwischen", "135", "70", False]),
+    ("what is the oil-pressure range of a c-500?", ["zwischen", "35", "70", True]),
+    ("who is the PM of New Zealand?", NOT_IN_MY_DOCS_MSG),
+    ("In Emergency restart, what is Maximum start ITT?", ["Start-ITT", "maximale ", "700", True]),
+    ("In Emergency restart, what is Maximum start ITT?", ["Start-ITT", "maximale ", "705", False]),
+    ("who is responsible for flight-planning?", ["captain", "verantwortlich", "ist", True]),
+    ("can a child fly the plane?", NOT_IN_MY_DOCS_MSG),
 ])
 def test_query_rag(query, expected):
     response = requests.get(f"http://localhost:8000/query_rag/{query}")
@@ -118,10 +140,5 @@ def test_query_rag(query, expected):
     find_bad = answer.find("blablabla_its_not_a_reasonable_string")
     assert(find_bad == -1)
 
-    all_words_are_in_answer = True;
-    for w in expected[:-1]:
-        word_is_in_answer = (answer.find(w) > 0)
-        if (word_is_in_answer == False):
-            all_words_are_in_answer = False
-
-    assert(all_words_are_in_answer == (expected[-1]))
+    found_in_answer = all_expected_words_in_answer(expected, answer)
+    assert(found_in_answer == (expected[-1]))

@@ -10,6 +10,7 @@ requires-python = ">=3.14"
 dependencies = [
     "docx>=0.2.4",
     "docx2txt>=0.9",
+    "fastapi[standard]>=0.143.0",
     "fastembed>=0.8.1",
     "fonttools>=4.66.1",
     "imap-tools>=1.15.0",
@@ -29,7 +30,7 @@ dependencies = [
 ]
 
 [project.scripts]
-personal-knowledge-base = "personal_knowledge_base:main"
+server="personal_knowledge_base.web_service:main"
 
 [build-system]
 requires = ["uv_build>=0.12.15,<0.13.0"]
@@ -41,3 +42,12 @@ dev = [
     "pytest>=9.1.1",
     "pytest-cov>=7.1.0",
 ]
+
+
+[tool.uv]
+python-preference = "only-system"
+
+[tool.uv.build-backend]
+module-name = ["personal_knowledge_base"]
+namespace=true
+

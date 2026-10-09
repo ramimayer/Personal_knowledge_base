@@ -11,6 +11,8 @@ from pydantic import Field
 from personal_knowledge_base.docs_utils import folder_to_txt
 import personal_knowledge_base.rag 
 
+import uvicorn
+
 class ServerData(BaseModel):
     username: str
     email_folder: str
@@ -92,4 +94,11 @@ def create_vectorestore(docs_folder: Annotated[str, Path(min_length=1)]):
     qdrant_db_path = personal_knowledge_base.rag.produce_vectorestore(documents, docs_folder)
 
     return {"message": "vectorestore created !!    " + "qdrant_db_path = " + qdrant_db_path}
+
+def main():
+    uvicorn.run(rag, host="127.0.0.1", port=8000)
+    
+# run the app
+if __name__ == "__main__":
+    main()
 

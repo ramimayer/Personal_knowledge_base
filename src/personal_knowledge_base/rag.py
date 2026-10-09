@@ -9,6 +9,8 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 
+from functools import cache
+
 class static_vars:
     EMBEDDING_MODEL = "openai/text-embedding-3-small"
     SPARSE_EMBEDDING_MODEL = "Qdrant/bm25"
@@ -24,7 +26,7 @@ class static_vars:
 
     @property
     def QDRANT_DB_PATH(self):
-        return os.getenv("QDRANT_DB_PATH", "../../../data/qdrant_db")
+        return os.getenv("QDRANT_DB_PATH", "../data/qdrant_db")
 
     def __init__(self):
         load_dotenv()
@@ -53,6 +55,7 @@ def produce_vectorestore(documents: list, docs_folder: str) -> str:
     return qdrant_db_path
 
 #----------------------------------------------------------------------------------------
+@cache
 def _create_retriever():
     s = static_vars()
 
