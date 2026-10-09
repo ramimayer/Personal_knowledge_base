@@ -122,6 +122,7 @@ def all_expected_words_in_answer(expected: list, answer: str) -> bool:
 
 @pytest.mark.parametrize("query, expected", [ 
     ("what is the oil-pressure range of a c-500?", ["zwischen", "35", "70", True]),
+    ("what is the oil-pressure range of a cessna 172?", NOT_IN_MY_DOCS_MSG),
     ("who is the PM of New Zealand?", NOT_IN_MY_DOCS_MSG),
     ("In Emergency restart, what is Maximum start ITT?", ["Start-ITT", "maximale ", "700", True]),
     ("In Emergency restart, what is Maximum start ITT?", ["Start-ITT", "maximale ", "705", False]),
