@@ -44,11 +44,15 @@ def save_attachments(username: str = Query(..., description="email of the user")
 
     # call mail_utils function to do the job, and return the appropriate message       
     success = personal_knowledge_base.mail_utils.save_attachments(username, email_folder, ATTACHMENTS_SAVE_FOLDER)
+    print("web_service.py   save_attachments()   success = " + str(success))
     if not success:
-         raise RuntimeError("save_attachments():  Failiure to write the files !")
-         return {"message": "Failiure to connect to mail-folder!"}
+         print("bfr raising RuntimeError")
+         msg = "Failiure to connect!  username = " + username  + "   email_folder = " +  email_folder
+         return {"message": msg, "rc": success}
 
-    return {"message": "Saving attachments!"}
+    print("afte the if")
+
+    return {"message": "Saving attachments!", "rc": success}
 
 #  usage:  "http://localhost:8000/save_texts?username=rami.mayer@yahoo.com&email_folder=CodingAcademy&save_folder=msgs"
 @rag.get("/save_texts")

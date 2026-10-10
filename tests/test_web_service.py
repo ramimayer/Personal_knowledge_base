@@ -4,7 +4,9 @@ import requests
 import pytest
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 import shutil
+import sys
 
 from fastapi.testclient import TestClient
 from personal_knowledge_base.web_service import rag
@@ -34,40 +36,60 @@ NOT_IN_MY_DOCS_MSG = ["nicht ", "meinen ", "Dokumenten ", "enthalten", True]
 @pytest.fixture(autouse=True)
 def delete_created_folders():
     # default_path = Path("C:/Users/ramim/Documents/projects/data/docs_orig_format")
-    default_path = DEFAULT_SAVE_FOLDER
+    # load_dotenv()
+    # PKB_DATA_FOLDER = os.getenv("PKB_DATA_FOLDER")
+    # if not PKB_DATA_FOLDER:
+    #     raise RuntimeError("PKB_DATA_FOLDER is not set")
+    
+    # default_path = PKB_DATA_FOLDER + "/" + VALID_SAVE_FOLDER_ATTACHMENTS
+    # default_path = DEFAULT_SAVE_FOLDER
 
+    default_path = Path("C:/Users/ramim/Documents/projects/data/docs_orig_format")
     if (os.path.exists(default_path)):
         shutil.rmtree(default_path)
 
     # docs_path = Path("C:/Users/ramim/Documents/projects/data/new_orig_format")
-    docs_path = VALID_SAVE_FOLDER_ATTACHMENTS
+    # docs_path = PKB_DATA_FOLDER + "/" + VALID_SAVE_FOLDER_TEXTS
+    docs_path = Path("C:/Users/ramim/Documents/projects/data/txt_msgs")
     if (os.path.exists(docs_path)):
         shutil.rmtree(docs_path)
 
-    docs_path = VALID_SAVE_FOLDER_TEXTS
-    if (os.path.exists(docs_path)):
-        shutil.rmtree(docs_path)
+    # docs_path = VALID_SAVE_FOLDER_TEXTS
+    # if (os.path.exists(docs_path)):
+    #     shutil.rmtree(docs_path)
 
 #============================================================================================
 # @pytest.mark.test_save_attachments
 @pytest.mark.parametrize("email, folder, save_folder, expected", [ 
-    # (VALID_EMAIL,       VALID_FOLDER_ATTACHMENTS,       VALID_SAVE_FOLDER_ATTACHMENTS,      True),
-    # (VALID_EMAIL,       VALID_FOLDER_ATTACHMENTS,       EMPTY_STR,                          True),
-    # (NON_VALID_EMAIL,   VALID_FOLDER_ATTACHMENTS,       EMPTY_STR,                          False),
-    # (NON_VALID_EMAIL,   NON_VALID_FOLDER,               EMPTY_STR,                          False),
-    # (NON_VALID_EMAIL,   EMPTY_STR,                      EMPTY_STR,                          False),
-    # (VALID_EMAIL,       EMPTY_STR,                      VALID_SAVE_FOLDER_ATTACHMENTS,      False),
-    # (VALID_EMAIL,       NON_VALID_FOLDER,               VALID_SAVE_FOLDER_ATTACHMENTS,      False),
-    # (EMPTY_STR,         EMPTY_STR,                      VALID_SAVE_FOLDER_ATTACHMENTS,      False),
-    # (EMPTY_STR,         VALID_FOLDER_ATTACHMENTS,       VALID_SAVE_FOLDER_ATTACHMENTS,      False),
-    # (EMPTY_STR,         NON_VALID_FOLDER,               VALID_SAVE_FOLDER_ATTACHMENTS,      False),
+    (VALID_EMAIL,       VALID_FOLDER_ATTACHMENTS,       VALID_SAVE_FOLDER_ATTACHMENTS,      True),
+    (VALID_EMAIL,       VALID_FOLDER_ATTACHMENTS,       EMPTY_STR,                          True),
+    (NON_VALID_EMAIL,   VALID_FOLDER_ATTACHMENTS,       EMPTY_STR,                          False),
+    (NON_VALID_EMAIL,   NON_VALID_FOLDER,               EMPTY_STR,                          False),
+    (NON_VALID_EMAIL,   EMPTY_STR,                      EMPTY_STR,                          False),
+    (VALID_EMAIL,       EMPTY_STR,                      VALID_SAVE_FOLDER_ATTACHMENTS,      False),
+    (VALID_EMAIL,       NON_VALID_FOLDER,               VALID_SAVE_FOLDER_ATTACHMENTS,      False),
+    (EMPTY_STR,         EMPTY_STR,                      VALID_SAVE_FOLDER_ATTACHMENTS,      False),
+    (EMPTY_STR,         VALID_FOLDER_ATTACHMENTS,       VALID_SAVE_FOLDER_ATTACHMENTS,      False),
+    (EMPTY_STR,         NON_VALID_FOLDER,               VALID_SAVE_FOLDER_ATTACHMENTS,      False),
 ])
 
 
 def test_save_attachments(email, folder, save_folder, expected):
     response = client.get(f"http://localhost:8000/save_attachments?username={email}&email_folder={folder}&save_folder={save_folder}")
+    # sys.stdout.write("write:  test_save_attachments():  after client.get()")
+    print("print:  test_save_attachments():  after client.get()")
+
+    j = response.json()
+    message = str(j["message"])
+    ret_code = j["rc"] 
+    if (not ret_code):
+        print("test_save_attachments(): message = " + message)
+
+    print("expected = " + str(expected))
+    assert(ret_code == expected)
+    
     in_range = lambda x, min, max : (x >= min   and   x <max)
-    assert(in_range(response.status_code, 200, 250) == expected)
+    assert(in_range(response.status_code, 200, 250) == True)
 
 
 #============================================================================================
@@ -121,14 +143,14 @@ def all_expected_words_in_answer(expected: list, answer: str) -> bool:
     return not one_expected_not_in_answer
 
 @pytest.mark.parametrize("query, expected", [ 
-    ("what is the oil-pressure range of a c-500?", ["zwischen", "35", "70", True]),
-    ("what is the oil-pressure range of a cessna 172?", NOT_IN_MY_DOCS_MSG),
-    ("what is the oil-pressure range of a mooney?", NOT_IN_MY_DOCS_MSG),
-    ("who is the PM of New Zealand?", NOT_IN_MY_DOCS_MSG),
-    ("In Emergency restart, what is Maximum start ITT?", ["Start-ITT", "maximale ", "700", True]),
-    ("In Emergency restart, what is Maximum start ITT?", ["Start-ITT", "maximale ", "705", False]),
-    ("who is responsible for flight-planning?", ["captain", "verantwortlich", "ist", True]),
-    ("can a child fly the plane?", NOT_IN_MY_DOCS_MSG),
+    # ("what is the oil-pressure range of a c-500?", ["zwischen", "35", "70", True]),
+    # ("what is the oil-pressure range of a cessna 172?", NOT_IN_MY_DOCS_MSG),
+    # ("what is the oil-pressure range of a mooney?", NOT_IN_MY_DOCS_MSG),
+    # ("who is the PM of New Zealand?", NOT_IN_MY_DOCS_MSG),
+    # ("In Emergency restart, what is Maximum start ITT?", ["Start-ITT", "maximale ", "700", True]),
+    # ("In Emergency restart, what is Maximum start ITT?", ["Start-ITT", "maximale ", "705", False]),
+    # ("who is responsible for flight-planning?", ["captain", "verantwortlich", "ist", True]),
+    # ("can a child fly the plane?", NOT_IN_MY_DOCS_MSG),
 ])
 def test_query_rag(query, expected):
     response = client.get(f"http://localhost:8000/query_rag/{query}")

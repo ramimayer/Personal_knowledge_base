@@ -11,7 +11,6 @@ from pathlib import Path
 from langchain_text_splitters import (
     RecursiveCharacterTextSplitter,
 )
-from personal_knowledge_base.visualize_chunks import visualize_chunks
 import personal_knowledge_base.pdf_utils
 import personal_knowledge_base.word_utils
 

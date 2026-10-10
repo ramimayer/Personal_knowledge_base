@@ -9,6 +9,9 @@ from dotenv import load_dotenv
 def connect_to_mail_folder(username: str, email_folder:str):
     print("connect_to_mail_folder()")
     # EMAIL_FOLDER = email_folder
+    if (email_folder == ""):
+        print("Error:  empty email folder!")
+        return None
 
     MAIL_PASSWD = SecretStr(os.getenv("MAIL_SERVER_PASSWD", ""))
     if not MAIL_PASSWD.get_secret_value():
@@ -20,10 +23,74 @@ def connect_to_mail_folder(username: str, email_folder:str):
     mail = imaplib.IMAP4_SSL(imap_ssl_host, imap_ssl_port, ssl_context=context)
 
     # Login to mail
-    mail.login(username, MAIL_PASSWD.get_secret_value())
-    mail.select(email_folder)
+    print("bfr login")
+    # t = mail.login(username, MAIL_PASSWD.get_secret_value())
+    try:
+        mail.login(username, MAIL_PASSWD.get_secret_value())
+        print ("Logged in uusername")
+    except: 
+        # imaplib.
+        print ("Log in failed.")
+        return None
 
+    # print("aftr login")
+    # rv, data = mail.search(None, email_folder)
+    # if rv != 'OK':
+    #     print ("Folder not found!")
+    #     return None
+
+    l = mail.list(directory='', pattern=email_folder)
+    print ("len l = " + str(len(l)) )
+
+    for i in l:
+        print(str(i) + "   stam...")
+
+    lc1 = l[1][0]
+    print(lc1)
+    if (lc1 == None):
+        print("bfr returning 1st None")
+        return None
+
+    # text_data = lc1.decode('utf-8')
+    # found_no_select = text_data.find("Noselect")
+
+    # print("aftr lc11,  found_no_select = " + found_no_select)
+    # print("type lc1 = " + type(lc1))
+    # found_folder = lc1.find(email_folder)
+    # print("found_folder = " + found_folder)
+    
+    # for i in mail.list(directory='', pattern=email_folder):
+    #     print(str(i) + "   stam..")
+
+    # if (l not in mail.list()[1]):
+    #     print("bfr returning None")
+    #     return None
+
+    # print("bfr mail.select()")
+    # mail.select(email_folder)
+
+    # l = mail.list(directory='', pattern=email_folder)
+    # print ("len l = " + str(len(l)) )
+    
+    # for i in l:
+    #     print(i)
+
+    # if (l[0] == None):
+    #     return None
+
+    print("bfr mail.select(),  email_folder = " + email_folder)
+    mail.select(email_folder)
     return mail
+    
+    # try:
+    #     if (mail.select(email_folder) == None):
+    #         print("connect_to_mail_folder():   returning None")
+    #         return None
+    #     else:
+    #         return mail
+    # finally:
+    #     print("except in select..")
+
 
 #----------------------------------------------------------------------------------------
 # save all the attachments from a specific email-folder of a user
@@ -34,7 +101,9 @@ def save_attachments(username: str,
     # establish serever-connection
     folder_handle = connect_to_mail_folder(username, email_folder)
     if not folder_handle:
+        print("save_attachments():  returning False")
         return False
+    print("save_attachments():  after the check..")
     
     type, data = folder_handle.search(None, 'ALL')
     mail_ids = data[0]
