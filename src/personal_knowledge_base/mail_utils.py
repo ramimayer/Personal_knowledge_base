@@ -121,31 +121,34 @@ def save_texts(username: str,
     load_dotenv()
     MAIL_PASSWD = SecretStr(os.getenv("MAIL_SERVER_PASSWD", ""))
     if not MAIL_PASSWD.get_secret_value():
-        raise RuntimeError("MAIL_SERVER_PASSWD is not set")
-    
+        raise RuntimeError("MAIL_SERVER_PASSWD is not set")   
     mail_password = MAIL_PASSWD.get_secret_value()
-    with MailBox('imap.mail.yahoo.com').login(username, mail_password, initial_folder=email_folder) as mb:
-        for msg in mb.fetch(limit=25, reverse=True):
-            sender = msg.from_
-            sender = sender.replace('<', '').replace('>', '')  
-            sender = sender.split(" ")[0].replace('\"', '')
-            sender = sender.replace('@', '_')
-            tpath = save_folder + '/' + str(sender)
-            Path(tpath).mkdir(parents=True, exist_ok=True)
-            subject_split = msg.subject.split()
-            file_name = msg.subject
-            if (len(subject_split) > 9):
-                file_name = subject_split[0] + "_" + subject_split[1] + "_" + subject_split[2] + "_" + subject_split[3] +  "_" + subject_split[4] + "_" + subject_split[5] + "_" + subject_split[6] + subject_split[7] + "_" + subject_split[8]
-            file_name = _make_valid_filename(file_name) + ".txt" 
-            file_path = tpath.__str__() + '/' + file_name
-            print("file_path = " + file_path)
-            fp = open(file_path, "wb")
-            fp.write(msg.from_.encode())
-            fp.write(msg.subject.encode())
-            fp.write(msg.text.encode())
-            fp.close()
 
-            print(file_path)
+    try:
+        with MailBox('imap.mail.yahoo.com').login(username, mail_password, initial_folder=email_folder) as mb:
+            for msg in mb.fetch(limit=25, reverse=True):
+                sender = msg.from_
+                sender = sender.replace('<', '').replace('>', '')  
+                sender = sender.split(" ")[0].replace('\"', '')
+                sender = sender.replace('@', '_')
+                tpath = save_folder + '/' + str(sender)
+                Path(tpath).mkdir(parents=True, exist_ok=True)
+                subject_split = msg.subject.split()
+                file_name = msg.subject
+                if (len(subject_split) > 9):
+                    file_name = subject_split[0] + "_" + subject_split[1] + "_" + subject_split[2] + "_" + subject_split[3] +  "_" + subject_split[4] + "_" + subject_split[5] + "_" + subject_split[6] + subject_split[7] + "_" + subject_split[8]
+                file_name = _make_valid_filename(file_name) + ".txt" 
+                file_path = tpath.__str__() + '/' + file_name
+                print("file_path = " + file_path)
+                fp = open(file_path, "wb")
+                fp.write(msg.from_.encode())
+                fp.write(msg.subject.encode())
+                fp.write(msg.text.encode())
+                fp.close()
+
+                print(file_path)
+    except:
+        return False
 
     return True
 

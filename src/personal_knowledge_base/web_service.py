@@ -66,7 +66,10 @@ def save_texts(server_data: ServerData = Depends()):
         raise RuntimeError("The folder where messages should save DOESN'T exist! " + PKB_DATA_FOLDER)
     
     success = personal_knowledge_base.mail_utils.save_texts(server_data.username, server_data.email_folder, MESSAGES_SAVE_FOLDER)
-    return {"message": "Saving texts!"}
+    if (success == True):
+        return {"message": "Saving texts!"}
+    else:
+        raise RuntimeError("Error occured withg texts-saving")
 
 
 # usage:   http://localhost:8000/query_rag/what%20is%20instrument%20flying
