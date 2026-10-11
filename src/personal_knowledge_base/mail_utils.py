@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 # establish a connection with the mail-serever, and return a handle to the email-folder
 def connect_to_mail_folder(username: str, email_folder:str):
     print("connect_to_mail_folder()")
-    # EMAIL_FOLDER = email_folder
     if (email_folder == ""):
         print("Error:  empty email folder!")
         return None
@@ -24,73 +23,21 @@ def connect_to_mail_folder(username: str, email_folder:str):
 
     # Login to mail
     print("bfr login")
-    # t = mail.login(username, MAIL_PASSWD.get_secret_value())
     try:
         mail.login(username, MAIL_PASSWD.get_secret_value())
-        print ("Logged in uusername")
     except: 
         # imaplib.
         print ("Log in failed.")
         return None
 
-    # print("aftr login")
-    # rv, data = mail.search(None, email_folder)
-    # if rv != 'OK':
-    #     print ("Folder not found!")
-    #     return None
-
     l = mail.list(directory='', pattern=email_folder)
-    print ("len l = " + str(len(l)) )
-
-    for i in l:
-        print(str(i) + "   stam...")
-
     lc1 = l[1][0]
     print(lc1)
     if (lc1 == None):
-        print("bfr returning 1st None")
         return None
 
-    # text_data = lc1.decode('utf-8')
-    # found_no_select = text_data.find("Noselect")
-
-    # print("aftr lc11,  found_no_select = " + found_no_select)
-    # print("type lc1 = " + type(lc1))
-    # found_folder = lc1.find(email_folder)
-    # print("found_folder = " + found_folder)
-    
-    # for i in mail.list(directory='', pattern=email_folder):
-    #     print(str(i) + "   stam..")
-
-    # if (l not in mail.list()[1]):
-    #     print("bfr returning None")
-    #     return None
-
-    # print("bfr mail.select()")
-    # mail.select(email_folder)
-
-    # l = mail.list(directory='', pattern=email_folder)
-    # print ("len l = " + str(len(l)) )
-    
-    # for i in l:
-    #     print(i)
-
-    # if (l[0] == None):
-    #     return None
-
-    print("bfr mail.select(),  email_folder = " + email_folder)
     mail.select(email_folder)
     return mail
-    
-    # try:
-    #     if (mail.select(email_folder) == None):
-    #         print("connect_to_mail_folder():   returning None")
-    #         return None
-    #     else:
-    #         return mail
-    # finally:
-    #     print("except in select..")
-
 
 #----------------------------------------------------------------------------------------
 # save all the attachments from a specific email-folder of a user
@@ -101,9 +48,7 @@ def save_attachments(username: str,
     # establish serever-connection
     folder_handle = connect_to_mail_folder(username, email_folder)
     if not folder_handle:
-        print("save_attachments():  returning False")
         return False
-    print("save_attachments():  after the check..")
     
     type, data = folder_handle.search(None, 'ALL')
     mail_ids = data[0]
@@ -111,7 +56,6 @@ def save_attachments(username: str,
 
     # loop over all the mails in the folder
     for id in id_list:
-        print("id:" + str(id))
         typ, data = folder_handle.fetch(id, '(RFC822)')
 
         # convert byte literal to string
@@ -119,7 +63,6 @@ def save_attachments(username: str,
         try:
             raw_email_string = raw_email.decode('utf-8')
         except UnicodeDecodeError:
-            print("bad raw_email decode!")
             continue
             
         email_message = email.message_from_string(raw_email_string)
@@ -135,7 +78,6 @@ def save_attachments(username: str,
 
             # make sure the file is from a type that we ant to save. if not - move to the next file
             file_name = part.get_filename()
-            print(file_name)
             if (file_name):
                 ftype = file_name.split(".")[-1]
             else:
@@ -145,7 +87,7 @@ def save_attachments(username: str,
                 continue
 
             # make sure the file-name is valid 
-            file_name = make_valid_filename(file_name)
+            file_name = _make_valid_filename(file_name)
             if (file_name == None):
                 continue
 
@@ -160,12 +102,9 @@ def save_attachments(username: str,
                 tpath = save_folder + '/' + str(sender)
                 Path(tpath).mkdir(parents=True, exist_ok=True)
                 file_path = tpath.__str__() + '/' + file_name
-
-                print("attachment_path: " + file_path)
                 print("save path: " + file_path + "\n")
                 
                 if not os.path.isfile(file_path):
-                    print(file_name)
                     try:
                         fp = open(file_path, "wb")
                         fp.write(part.get_payload(decode=True))
@@ -174,10 +113,10 @@ def save_attachments(username: str,
                         print("Bad value!")
                         return False
     return True
-
+#----------------------------------------------------------------------------------------
 def save_texts(username: str,
                email_folder: str,
-               save_folder: str):
+               save_folder: str) -> bool:
 
     load_dotenv()
     MAIL_PASSWD = SecretStr(os.getenv("MAIL_SERVER_PASSWD", ""))
@@ -197,7 +136,7 @@ def save_texts(username: str,
             file_name = msg.subject
             if (len(subject_split) > 9):
                 file_name = subject_split[0] + "_" + subject_split[1] + "_" + subject_split[2] + "_" + subject_split[3] +  "_" + subject_split[4] + "_" + subject_split[5] + "_" + subject_split[6] + subject_split[7] + "_" + subject_split[8]
-            file_name = make_valid_filename(file_name) + ".txt" 
+            file_name = _make_valid_filename(file_name) + ".txt" 
             file_path = tpath.__str__() + '/' + file_name
             print("file_path = " + file_path)
             fp = open(file_path, "wb")
@@ -208,9 +147,11 @@ def save_texts(username: str,
 
             print(file_path)
 
+    return True
+
 #----------------------------------------------------------------------------------------
 # Make sure that the file-name is valid by replacing non-valid characters
-def make_valid_filename(file_name:str) -> str:
+def _make_valid_filename(file_name:str) -> str:
     file_name = file_name.replace(' ', '_')
     file_name = file_name.replace(',', '_')
     file_name = file_name.replace('?', '_')

@@ -37,22 +37,19 @@ def save_attachments(username: str = Query(..., description="email of the user")
     load_dotenv()
     PKB_DATA_FOLDER = os.getenv("PKB_DATA_FOLDER")
     if not PKB_DATA_FOLDER:
-        raise RuntimeError("PKB_DATA_FOLDER is not set")
-    ATTACHMENTS_SAVE_FOLDER = PKB_DATA_FOLDER + "/" + save_folder
+        return {"message": "PKB_DATA_FOLDER is not set", "rc": False}
+    attachments_save_folder = PKB_DATA_FOLDER + "/" + save_folder
     if not os.path.exists(PKB_DATA_FOLDER):
-        raise RuntimeError("The data-folder  DOESN'T exist! " + PKB_DATA_FOLDER)
+        return {"message": "The data-folder  DOESN'T exist! ", "rc": False}
 
     # call mail_utils function to do the job, and return the appropriate message       
-    success = personal_knowledge_base.mail_utils.save_attachments(username, email_folder, ATTACHMENTS_SAVE_FOLDER)
+    success = personal_knowledge_base.mail_utils.save_attachments(username, email_folder, attachments_save_folder)
     print("web_service.py   save_attachments()   success = " + str(success))
     if not success:
-         print("bfr raising RuntimeError")
          msg = "Failiure to connect!  username = " + username  + "   email_folder = " +  email_folder
          return {"message": msg, "rc": success}
 
-    print("afte the if")
-
-    return {"message": "Saving attachments!", "rc": success}
+    return {"message": "Saved attachments!", "rc": success}
 
 #  usage:  "http://localhost:8000/save_texts?username=rami.mayer@yahoo.com&email_folder=CodingAcademy&save_folder=msgs"
 @rag.get("/save_texts")
@@ -68,7 +65,7 @@ def save_texts(server_data: ServerData = Depends()):
     if not os.path.exists(PKB_DATA_FOLDER):
         raise RuntimeError("The folder where messages should save DOESN'T exist! " + PKB_DATA_FOLDER)
     
-    personal_knowledge_base.mail_utils.save_texts(server_data.username, server_data.email_folder, MESSAGES_SAVE_FOLDER)
+    success = personal_knowledge_base.mail_utils.save_texts(server_data.username, server_data.email_folder, MESSAGES_SAVE_FOLDER)
     return {"message": "Saving texts!"}
 
 
