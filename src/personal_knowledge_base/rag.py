@@ -1,4 +1,5 @@
 import os
+import personal_knowledge_base.config
 from dotenv import load_dotenv
 from langchain_openrouter import ChatOpenRouter
 from langchain_openai import OpenAIEmbeddings
@@ -24,12 +25,14 @@ class static_vars:
             raise RuntimeError("OPENROUTER_API_KEY is not set")
         return API_KEY
 
-    @property
-    def QDRANT_DB_PATH(self):
-        return os.getenv("QDRANT_DB_PATH", "../data/qdrant_db")
+    # @property
+    # def QDRANT_DB_PATH(self):
+    #     return "stam"
+    #     # return os.getenv("QDRANT_DB_PATH", "../data/qdrant_db")
 
     def __init__(self):
         load_dotenv()
+        self.COLLECTION_NAME = personal_knowledge_base.config.read_config("COLLECTION_NAME")
 
 #----------------------------------------------------------------------------------------
 # params: documents -  a list of documents, chunks from the texts, ready for QdrantVectorStore

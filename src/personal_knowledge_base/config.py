@@ -8,11 +8,28 @@ class PkbConfig:
 
     @property
     def PKB_DATA_FOLDER(self):
-        return read_config("PKB_DATA_FOLDER")
+        return self._PKB_DATA_FOLDER
 
     def __init__(self):
-        read_config("PKB_DATA_FOLDER")
+        read_config(self)
+        # read_config("PKB_DATA_FOLDER")
 
+    def validate_path_config_variable(self, path: str) -> bool:
+        if not path:
+            raise RuntimeError("CONFIG variable is not set")
+        # if not os.path.exists(path):
+        #     raise RuntimeError("The path DOESN'T exist! " + path)
+
+    def read_config(self) -> str:
+        config_file = "./src/personal_knowledge_base/config.txt"
+        f = open(config_file, "r")
+        for line in f:
+            s = line.split()
+            if (s[0] == "PKB_DATA_FOLDER"):
+                if (self.validate_path_config_variable(s[1])):
+                    self._PKB_DATA_FOLDER = s[1]
+                
+# ========================================================================
 def read_config(variable: str) -> str:
     config_file = "./src/personal_knowledge_base/config.txt"
     print("read_config():   config_file = " + config_file + ",   variable = " + variable)

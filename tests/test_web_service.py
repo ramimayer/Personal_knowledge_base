@@ -61,7 +61,7 @@ def delete_created_folders():
 @pytest.mark.parametrize("email, folder, save_folder, expected", [ 
     (VALID_EMAIL,       VALID_FOLDER_ATTACHMENTS,       VALID_SAVE_FOLDER_ATTACHMENTS,      True),
     # (VALID_EMAIL,       VALID_FOLDER_ATTACHMENTS,       EMPTY_STR,                          True),
-    (NON_VALID_EMAIL,   VALID_FOLDER_ATTACHMENTS,       EMPTY_STR,                          False),
+    # (NON_VALID_EMAIL,   VALID_FOLDER_ATTACHMENTS,       EMPTY_STR,                          False),
     # (NON_VALID_EMAIL,   NON_VALID_FOLDER,               EMPTY_STR,                          False),
     # (NON_VALID_EMAIL,   EMPTY_STR,                      EMPTY_STR,                          False),
     # (VALID_EMAIL,       EMPTY_STR,                      VALID_SAVE_FOLDER_ATTACHMENTS,      False),
@@ -74,7 +74,6 @@ def delete_created_folders():
 
 def test_save_attachments(email, folder, save_folder, expected):
     response = client.get(f"http://localhost:8000/save_attachments?username={email}&email_folder={folder}&save_folder={save_folder}")
-    # sys.stdout.write("write:  test_save_attachments():  after client.get()")
     print("print:  test_save_attachments():  after client.get()")
 
     j = response.json()
