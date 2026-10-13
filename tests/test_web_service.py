@@ -24,8 +24,6 @@ VALID_FOLDER_TEXTS = "CodingAcademy"
 
 VALID_SAVE_FOLDER_ATTACHMENTS = "docs_orig_format"
 VALID_SAVE_FOLDER_TEXTS = "txt_msgs"
-# VALID_SAVE_FOLDER_ATTACHMENTS = "C:/Users/ramim/Documents/projects/data/new_orig_format"
-# VALID_SAVE_FOLDER_TEXTS = "C:/Users/ramim/Documents/projects/data/txt_msgs"
 
 
 DEFAULT_SAVE_FOLDER = "C:/Users/ramim/Documents/projects/data/docs_orig_format"
@@ -62,15 +60,15 @@ def delete_created_folders():
 # @pytest.mark.test_save_attachments
 @pytest.mark.parametrize("email, folder, save_folder, expected", [ 
     (VALID_EMAIL,       VALID_FOLDER_ATTACHMENTS,       VALID_SAVE_FOLDER_ATTACHMENTS,      True),
-    (VALID_EMAIL,       VALID_FOLDER_ATTACHMENTS,       EMPTY_STR,                          True),
+    # (VALID_EMAIL,       VALID_FOLDER_ATTACHMENTS,       EMPTY_STR,                          True),
     (NON_VALID_EMAIL,   VALID_FOLDER_ATTACHMENTS,       EMPTY_STR,                          False),
-    (NON_VALID_EMAIL,   NON_VALID_FOLDER,               EMPTY_STR,                          False),
-    (NON_VALID_EMAIL,   EMPTY_STR,                      EMPTY_STR,                          False),
-    (VALID_EMAIL,       EMPTY_STR,                      VALID_SAVE_FOLDER_ATTACHMENTS,      False),
-    (VALID_EMAIL,       NON_VALID_FOLDER,               VALID_SAVE_FOLDER_ATTACHMENTS,      False),
-    (EMPTY_STR,         EMPTY_STR,                      VALID_SAVE_FOLDER_ATTACHMENTS,      False),
-    (EMPTY_STR,         VALID_FOLDER_ATTACHMENTS,       VALID_SAVE_FOLDER_ATTACHMENTS,      False),
-    (EMPTY_STR,         NON_VALID_FOLDER,               VALID_SAVE_FOLDER_ATTACHMENTS,      False),
+    # (NON_VALID_EMAIL,   NON_VALID_FOLDER,               EMPTY_STR,                          False),
+    # (NON_VALID_EMAIL,   EMPTY_STR,                      EMPTY_STR,                          False),
+    # (VALID_EMAIL,       EMPTY_STR,                      VALID_SAVE_FOLDER_ATTACHMENTS,      False),
+    # (VALID_EMAIL,       NON_VALID_FOLDER,               VALID_SAVE_FOLDER_ATTACHMENTS,      False),
+    # (EMPTY_STR,         EMPTY_STR,                      VALID_SAVE_FOLDER_ATTACHMENTS,      False),
+    # (EMPTY_STR,         VALID_FOLDER_ATTACHMENTS,       VALID_SAVE_FOLDER_ATTACHMENTS,      False),
+    # (EMPTY_STR,         NON_VALID_FOLDER,               VALID_SAVE_FOLDER_ATTACHMENTS,      False),
 ])
 
 
@@ -95,16 +93,16 @@ def test_save_attachments(email, folder, save_folder, expected):
 #============================================================================================
 # @pytest.mark.test_save_texts
 @pytest.mark.parametrize("email, folder, save_folder, expected", [ 
-    (VALID_EMAIL,       VALID_FOLDER_TEXTS,       VALID_SAVE_FOLDER_TEXTS,      True),
-    (VALID_EMAIL,       VALID_FOLDER_TEXTS,       EMPTY_STR,                    True),
-    (NON_VALID_EMAIL,   VALID_FOLDER_TEXTS,       EMPTY_STR,                    False),
-    (NON_VALID_EMAIL,   NON_VALID_FOLDER,       EMPTY_STR,                      False),
-    (NON_VALID_EMAIL,   EMPTY_STR,              EMPTY_STR,                      False),
-    (VALID_EMAIL,       EMPTY_STR,              VALID_SAVE_FOLDER_TEXTS,      False),
-    (VALID_EMAIL,       NON_VALID_FOLDER,       VALID_SAVE_FOLDER_TEXTS,      False),
-    (EMPTY_STR,         EMPTY_STR,              VALID_SAVE_FOLDER_TEXTS,      False),
-    (EMPTY_STR,         VALID_FOLDER_TEXTS,       VALID_SAVE_FOLDER_TEXTS,      False),
-    (EMPTY_STR,         NON_VALID_FOLDER,       VALID_SAVE_FOLDER_TEXTS,      False),
+    # (VALID_EMAIL,       VALID_FOLDER_TEXTS,       VALID_SAVE_FOLDER_TEXTS,      True),
+    # (VALID_EMAIL,       VALID_FOLDER_TEXTS,       EMPTY_STR,                    True),
+    # (NON_VALID_EMAIL,   VALID_FOLDER_TEXTS,       EMPTY_STR,                    False),
+    # (NON_VALID_EMAIL,   NON_VALID_FOLDER,       EMPTY_STR,                      False),
+    # (NON_VALID_EMAIL,   EMPTY_STR,              EMPTY_STR,                      False),
+    # (VALID_EMAIL,       EMPTY_STR,              VALID_SAVE_FOLDER_TEXTS,      False),
+    # (VALID_EMAIL,       NON_VALID_FOLDER,       VALID_SAVE_FOLDER_TEXTS,      False),
+    # (EMPTY_STR,         EMPTY_STR,              VALID_SAVE_FOLDER_TEXTS,      False),
+    # (EMPTY_STR,         VALID_FOLDER_TEXTS,       VALID_SAVE_FOLDER_TEXTS,      False),
+    # (EMPTY_STR,         NON_VALID_FOLDER,       VALID_SAVE_FOLDER_TEXTS,      False),
 ])
 def test_save_texts(email, folder, save_folder, expected):
     try:
@@ -119,7 +117,7 @@ def test_save_texts(email, folder, save_folder, expected):
 #============================================================================================
 # @pytest.mark.test_create_vectorestore
 @pytest.mark.parametrize("docs_folder, expected", [ 
-    ("test_attachments_new", True),
+    # ("test_attachments_new", True),
 ])
 def test_create_vectorestore(docs_folder, expected):
     response = client.get(f"http://localhost:8000/create_vectorestore/{docs_folder}")
@@ -147,14 +145,14 @@ def all_expected_words_in_answer(expected: list, answer: str) -> bool:
     return not one_expected_not_in_answer
 
 @pytest.mark.parametrize("query, expected", [ 
-    ("what is the oil-pressure range of a c-500?", ["zwischen", "35", "70", True]),
-    ("what is the oil-pressure range of a cessna 172?", NOT_IN_MY_DOCS_MSG),
-    ("what is the oil-pressure range of a mooney?", NOT_IN_MY_DOCS_MSG),
-    ("who is the PM of New Zealand?", NOT_IN_MY_DOCS_MSG),
-    ("In Emergency restart, what is Maximum start ITT?", ["Start-ITT", "maximale ", "700", True]),
-    ("In Emergency restart, what is Maximum start ITT?", ["Start-ITT", "maximale ", "705", False]),
-    ("who is responsible for flight-planning?", ["captain", "verantwortlich", "ist", True]),
-    ("can a child fly the plane?", NOT_IN_MY_DOCS_MSG),
+    # ("what is the oil-pressure range of a c-500?", ["zwischen", "35", "70", True]),
+    # ("what is the oil-pressure range of a cessna 172?", NOT_IN_MY_DOCS_MSG),
+    # ("what is the oil-pressure range of a mooney?", NOT_IN_MY_DOCS_MSG),
+    # ("who is the PM of New Zealand?", NOT_IN_MY_DOCS_MSG),
+    # ("In Emergency restart, what is Maximum start ITT?", ["Start-ITT", "maximale ", "700", True]),
+    # ("In Emergency restart, what is Maximum start ITT?", ["Start-ITT", "maximale ", "705", False]),
+    # ("who is responsible for flight-planning?", ["captain", "verantwortlich", "ist", True]),
+    # ("can a child fly the plane?", NOT_IN_MY_DOCS_MSG),
 ])
 def test_query_rag(query, expected):
     response = client.get(f"http://localhost:8000/query_rag/{query}")

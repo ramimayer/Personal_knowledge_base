@@ -2,6 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, Path
+import personal_knowledge_base.config 
 import personal_knowledge_base.mail_utils
 import personal_knowledge_base.docs_utils
 from pydantic import BaseModel
@@ -12,6 +13,8 @@ from personal_knowledge_base.docs_utils import folder_to_txt
 import personal_knowledge_base.rag 
 
 import uvicorn
+
+
 
 class ServerData(BaseModel):
     username: str
@@ -26,7 +29,13 @@ def save_attachments(username: str = Query(..., description="email of the user")
                      email_folder: str = Query(..., description="mail-folder to process"),
                      save_folder: str = Query(..., description="mail-folder to process")
                      ):
-    print("web_service: save_attachments()    " + "username: " + username + ", email_folder: " + email_folder)
+    # check validity of config-variables
+    pkb_data_folder = personal_knowledge_base.config.read_config("PKB_DATA_FOLDER")
+    if not pkb_data_folder:
+        return {"message": "PKB_DATA_FOLDER is not set", "rc": False}
+    attachments_save_folder = pkb_data_folder + "/" + save_folder
+    if not os.path.exists(pkb_data_folder):
+        return {"message": "The data-folder  DOESN'T exist! ", "rc": False}
 
     # sanity input-check
     illegal_filename_symbols = ["/", "\\", "\"", "?", ":", "?", ":", ":"]
@@ -34,17 +43,9 @@ def save_attachments(username: str = Query(..., description="email of the user")
         if (s in save_folder):
             return {"message": "Illegal folder-name!   " + save_folder}
 
-    load_dotenv()
-    PKB_DATA_FOLDER = os.getenv("PKB_DATA_FOLDER")
-    if not PKB_DATA_FOLDER:
-        return {"message": "PKB_DATA_FOLDER is not set", "rc": False}
-    attachments_save_folder = PKB_DATA_FOLDER + "/" + save_folder
-    if not os.path.exists(PKB_DATA_FOLDER):
-        return {"message": "The data-folder  DOESN'T exist! ", "rc": False}
-
     # call mail_utils function to do the job, and return the appropriate message       
+    load_dotenv()
     success = personal_knowledge_base.mail_utils.save_attachments(username, email_folder, attachments_save_folder)
-    print("web_service.py   save_attachments()   success = " + str(success))
     if not success:
          msg = "Failiure to connect!  username = " + username  + "   email_folder = " +  email_folder
          return {"message": msg, "rc": success}

@@ -1,9 +1,6 @@
 # 
 
 from langchain_community.document_loaders import TextLoader, DirectoryLoader
-
-# import personal_knowledge_base.langchain_utils
-# import os
 from pathlib import Path
 
 
