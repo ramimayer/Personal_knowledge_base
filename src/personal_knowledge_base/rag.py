@@ -25,10 +25,9 @@ class static_vars:
             raise RuntimeError("OPENROUTER_API_KEY is not set")
         return API_KEY
 
-    # @property
-    # def QDRANT_DB_PATH(self):
-    #     return "stam"
-    #     # return os.getenv("QDRANT_DB_PATH", "../data/qdrant_db")
+    @property
+    def QDRANT_DB_PATH(self):
+        return personal_knowledge_base.config.read_config("PKB_QDRANT_DB_PATH")
 
     def __init__(self):
         load_dotenv()

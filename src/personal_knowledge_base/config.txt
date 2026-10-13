@@ -1,7 +1,7 @@
-PKB_DATA_FOLDER         C:\Users\ramim\Documents\projects\data\tests
-PKB_QDRANT_DB_PATH      C:\Users\ramim\Documents\projects\data\qdrant_db
-PKB_COLLECTION_NAME     sim_docs
+PKB_DATA_FOLDER         C:\Users\ramim\Documents\projects\data\tests                # The folder where data is written/loaded by the sytem
+PKB_QDRANT_DB_PATH      C:\Users\ramim\Documents\projects\data\test_qdrant_db       # the QUADRANT_DB that's LOADED by the RAG
+PKB_COLLECTION_NAME     sim_docs                                                    # the name of the collection written in the qfdrand-db produced by "create_vectorestore
 
-IMAP_SECURE_USER_NAME   rami.mayer@yahoo.com
-IMAP_SSL_HOST           imap.mail.yahoo.com
-IMAP_SSL_PORT           993
+IMAP_USER_NAME          rami.mayer@yahoo.com                                    # the email from where texts/attachm,ents are taken
+IMAP_SSL_HOST           imap.mail.yahoo.com                                     # IMAP host for yahoo
+IMAP_SSL_PORT           993                                                     # IMAP port for yahoo
