@@ -1,3 +1,7 @@
-PKB_DATA_FOLDER     C:\Users\ramim\Documents\projects\data\tests
-PKB_QDRANT_DB_PATH  C:\Users\ramim\Documents\projects\data\qdrant_db
-COLLECTION_NAME     not_default
+PKB_DATA_FOLDER         C:\Users\ramim\Documents\projects\data\tests
+PKB_QDRANT_DB_PATH      C:\Users\ramim\Documents\projects\data\qdrant_db
+PKB_COLLECTION_NAME     sim_docs
+
+IMAP_SECURE_USER_NAME   rami.mayer@yahoo.com
+IMAP_SSL_HOST           imap.mail.yahoo.com
+IMAP_SSL_PORT           993

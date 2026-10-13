@@ -1,12 +1,10 @@
-from unittest import TestCase
 from personal_knowledge_base.web_service import rag, save_attachments
-import requests
 import pytest
 import os
 from pathlib import Path
 from dotenv import load_dotenv
 import shutil
-import sys
+import personal_knowledge_base.config 
 
 from fastapi.testclient import TestClient
 from personal_knowledge_base.web_service import rag
@@ -14,7 +12,7 @@ client = TestClient(rag)
 
 #  shell-command:  pytest .\test_web_service.py -W ignore::DeprecationWarning --cov=../src --cov-report term-missing
 
-# gobal parameters for tests-parametrization
+# config parameters for tests - set YOUR OWN before testing !!
 VALID_EMAIL = "rami.mayer@yahoo.com"
 NON_VALID_EMAIL = "ram.mayer@yahoo.com"
 NON_VALID_FOLDER = "Bad_Folder"
@@ -25,36 +23,27 @@ VALID_FOLDER_TEXTS = "CodingAcademy"
 VALID_SAVE_FOLDER_ATTACHMENTS = "docs_orig_format"
 VALID_SAVE_FOLDER_TEXTS = "txt_msgs"
 
-
 DEFAULT_SAVE_FOLDER = "C:/Users/ramim/Documents/projects/data/docs_orig_format"
 EMPTY_STR = ""
 NOT_IN_MY_DOCS_MSG = ["nicht ", "meinen ", "Dokumenten ", "enthalten", True]
+#==========================================================================================
 
 
 @pytest.fixture(autouse=True)
 def delete_created_folders():
-    # default_path = Path("C:/Users/ramim/Documents/projects/data/docs_orig_format")
-    # load_dotenv()
-    # PKB_DATA_FOLDER = os.getenv("PKB_DATA_FOLDER")
-    # if not PKB_DATA_FOLDER:
-    #     raise RuntimeError("PKB_DATA_FOLDER is not set")
-    
-    # default_path = PKB_DATA_FOLDER + "/" + VALID_SAVE_FOLDER_ATTACHMENTS
-    # default_path = DEFAULT_SAVE_FOLDER
+    pkb_data_folder = personal_knowledge_base.config.read_config("PKB_DATA_FOLDER")
+    if not pkb_data_folder:
+        print("delete_created_folders():  bad PKB_DATA_FOLDER")
+        return
 
-    default_path = Path("C:/Users/ramim/Documents/projects/data/docs_orig_format")
+    default_path = pkb_data_folder + "/" + VALID_SAVE_FOLDER_ATTACHMENTS
     if (os.path.exists(default_path)):
         shutil.rmtree(default_path)
 
-    # docs_path = Path("C:/Users/ramim/Documents/projects/data/new_orig_format")
-    # docs_path = PKB_DATA_FOLDER + "/" + VALID_SAVE_FOLDER_TEXTS
-    docs_path = Path("C:/Users/ramim/Documents/projects/data/txt_msgs")
+    docs_path = pkb_data_folder + "/" + VALID_SAVE_FOLDER_TEXTS
     if (os.path.exists(docs_path)):
         shutil.rmtree(docs_path)
 
-    # docs_path = VALID_SAVE_FOLDER_TEXTS
-    # if (os.path.exists(docs_path)):
-    #     shutil.rmtree(docs_path)
 
 #============================================================================================
 # @pytest.mark.test_save_attachments
@@ -92,7 +81,7 @@ def test_save_attachments(email, folder, save_folder, expected):
 #============================================================================================
 # @pytest.mark.test_save_texts
 @pytest.mark.parametrize("email, folder, save_folder, expected", [ 
-    # (VALID_EMAIL,       VALID_FOLDER_TEXTS,       VALID_SAVE_FOLDER_TEXTS,      True),
+    (VALID_EMAIL,       VALID_FOLDER_TEXTS,       VALID_SAVE_FOLDER_TEXTS,      True),
     # (VALID_EMAIL,       VALID_FOLDER_TEXTS,       EMPTY_STR,                    True),
     # (NON_VALID_EMAIL,   VALID_FOLDER_TEXTS,       EMPTY_STR,                    False),
     # (NON_VALID_EMAIL,   NON_VALID_FOLDER,       EMPTY_STR,                      False),

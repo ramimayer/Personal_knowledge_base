@@ -32,7 +32,7 @@ class static_vars:
 
     def __init__(self):
         load_dotenv()
-        self.COLLECTION_NAME = personal_knowledge_base.config.read_config("COLLECTION_NAME")
+        self.COLLECTION_NAME = personal_knowledge_base.config.read_config("PKB_COLLECTION_NAME")
 
 #----------------------------------------------------------------------------------------
 # params: documents -  a list of documents, chunks from the texts, ready for QdrantVectorStore
