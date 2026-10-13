@@ -32,8 +32,10 @@ def save_attachments(username: str = Query(..., description="email of the user")
                      ):
     # check validity of config-variables
     # cfg = personal_knowledge_base.config.PkbConfig()
-    pkb_data_folder = personal_knowledge_base.config.read_config("PKB_DATA_FOLDER")
-    # pkb_data_folder = cfg.PKB_DATA_FOLDER
+    # pkb_data_folder = personal_knowledge_base.config.read_config("PKB_DATA_FOLDER")
+    cfg = personal_knowledge_base.config.PkbConfig()
+    pkb_data_folder = cfg.PKB_DATA_FOLDER
+    print("\naftrr cfg.PKB_DATA_FOLDER, pkb_data_folder = " + pkb_data_folder + "\n")
     if not pkb_data_folder:
         return {"message": "PKB_DATA_FOLDER is not set", "rc": False}
     attachments_save_folder = pkb_data_folder + "/" + save_folder
