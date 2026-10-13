@@ -1,4 +1,5 @@
 import imaplib, ssl, email, os
+import personal_knowledge_base.config 
 from pathlib import Path
 from imap_tools import MailBox
 from pydantic import SecretStr
@@ -17,8 +18,10 @@ def connect_to_mail_folder(username: str, email_folder:str):
         raise RuntimeError("MAIL_SERVER_PASSWD is not set")
 
     context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
-    imap_ssl_host = 'imap.mail.yahoo.com' 
-    imap_ssl_port = 993
+    imap_ssl_host = pkb_data_folder = personal_knowledge_base.config.read_config("IMAP_SSL_HOST")
+    imap_ssl_port_str = pkb_data_folder = personal_knowledge_base.config.read_config("IMAP_SSL_PORT")
+    imap_ssl_port = int(imap_ssl_port_str)
+    print("aftr read_config, imap_ssl_port_str = " + str(imap_ssl_port))
     mail = imaplib.IMAP4_SSL(imap_ssl_host, imap_ssl_port, ssl_context=context)
 
     # Login to mail
