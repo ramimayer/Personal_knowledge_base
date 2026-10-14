@@ -113,19 +113,13 @@ YOUR_REPOSITORY/
 
 ## Screenshots
 
-Add screenshots or GIFs if they help explain your project.
-
-Example:
 
 ```markdown
-
-```
-
 ![User Context](./screenshots/User_context.jpg)
 ![Software Context](./screenshots/Software_context.png)
+```
 
 
-Make sure the image exists at the specified path in your repository.
 
 ## Contributing
 
