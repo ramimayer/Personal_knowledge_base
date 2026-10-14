@@ -118,7 +118,7 @@ YOUR_REPOSITORY/
 
 ```
 ![User Context](./screenshots/User_context.jpg)
-![Software Context](./screenshots/Software_context.png)
+![Software Context](./screenshots/Software_context.jpg)
 
 
 
