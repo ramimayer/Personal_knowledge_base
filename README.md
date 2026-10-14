@@ -118,7 +118,8 @@ Add screenshots or GIFs if they help explain your project.
 Example:
 
 ```markdown
-![Application Screenshot](screenshots/demo.png)
+![Application Screenshot](screenshots/User context.png)
+![Application Screenshot](screenshots/Software context.png)
 ```
 
 Make sure the image exists at the specified path in your repository.

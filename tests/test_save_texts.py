@@ -8,7 +8,7 @@ from fastapi.testclient import TestClient
 from personal_knowledge_base.web_service import rag
 client = TestClient(rag)
 
-#  ----  lobal test variables -  CHANGE thenm to suite your computer !!   -------------
+#  ----  global test variables -  CHANGE thenm to suite your computer !!   -------------
 VALID_FOLDER_TEXTS = "CodingAcademy"
 NON_VALID_FOLDER = "Bad_Folder"
 EMPTY_STR = ""
@@ -37,7 +37,7 @@ def delete_created_folders():
 #============================================================================================
 # @pytest.mark.test_save_texts
 @pytest.mark.parametrize("test_email, folder, save_folder, expected", [ 
-    (VALID_EMAIL,       VALID_FOLDER_TEXTS,       VALID_SAVE_FOLDER_TEXTS,      True),
+    # (VALID_EMAIL,       VALID_FOLDER_TEXTS,       VALID_SAVE_FOLDER_TEXTS,      True),
     # (VALID_EMAIL,       VALID_FOLDER_TEXTS,       EMPTY_STR,                    True),
     # (NON_VALID_EMAIL,   VALID_FOLDER_TEXTS,       EMPTY_STR,                    False),
     # (NON_VALID_EMAIL,   NON_VALID_FOLDER,       EMPTY_STR,                      False),

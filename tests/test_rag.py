@@ -28,12 +28,12 @@ def all_expected_words_in_answer(expected: list, answer: str) -> bool:
 @pytest.mark.parametrize("query, expected", [ 
     ("what is the oil-pressure range of a c-500?", ["zwischen", "35", "70", True]),
     ("what is the oil-pressure range of a cessna 172?", NOT_IN_MY_DOCS_MSG),
-    # ("what is the oil-pressure range of a mooney?", NOT_IN_MY_DOCS_MSG),
-    # ("who is the PM of New Zealand?", NOT_IN_MY_DOCS_MSG),
-    # ("In Emergency restart, what is Maximum start ITT?", ["Start-ITT", "maximale ", "700", True]),
-    # ("In Emergency restart, what is Maximum start ITT?", ["Start-ITT", "maximale ", "705", False]),
-    # ("who is responsible for flight-planning?", ["captain", "verantwortlich", "ist", True]),
-    # ("can a child fly the plane?", NOT_IN_MY_DOCS_MSG),
+    ("what is the oil-pressure range of a mooney?", NOT_IN_MY_DOCS_MSG),
+    ("who is the PM of New Zealand?", NOT_IN_MY_DOCS_MSG),
+    ("In Emergency restart, what is Maximum start ITT?", ["Start-ITT", "maximale ", "700", True]),
+    ("In Emergency restart, what is Maximum start ITT?", ["Start-ITT", "maximale ", "705", False]),
+    ("who is responsible for flight-planning?", ["captain", "verantwortlich", "ist", True]),
+    ("can a child fly the plane?", NOT_IN_MY_DOCS_MSG),
 ])
 def test_query_rag(query, expected):
     response = client.get(f"http://localhost:8000/query_rag/{query}")
