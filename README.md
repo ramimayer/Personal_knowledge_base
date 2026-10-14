@@ -5,7 +5,7 @@ This Project lets you extract emails from Folders in your email-account, and fro
 ## Table of Contents
 
 - [Features](#features)
-- [Technologies Used](OCR, RAG)(#technologies-used)
+- [Technologies Used](#technologies-used)
 - [Getting Started](#getting-started)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -26,7 +26,7 @@ This Project lets you extract emails from Folders in your email-account, and fro
 
 - Programming language:  Python
 - Tools: [ Git, VS Code, uv, FastAPI, imap]
-
+- Methos:  OCR,  RAG
 
 ## Getting Started
 
