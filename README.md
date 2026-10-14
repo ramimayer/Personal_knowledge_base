@@ -33,11 +33,11 @@ This Project lets you extract emails from Folders in your email-account, and fro
 - create a Password that allows you to contact your email-Account via imap-protocol
 -  get an API-KEY for OpenRouter
 - choose a Folder where the email-data will reside
-- set (or put in a ".env" file) These 4 environment-variable with appropriate.values:
+- set (or put in a ".env" file) These 2 environment-variable with appropriate.values:
     -  OPENROUTER_API_KEY
     -  MAIL_SERVER_PASSWD
-    -  PKB_DATA_FOLDER      (full-path to the documents-data)
-    -  QDRANT_DB_PATH       (full-path to the qdrant_db file, that holds the vectorstore)
+- set values in "config.txt" that are suitable for your system
+
 
 
 
@@ -51,7 +51,7 @@ Install:    Git, Python, VS code
 1. Clone the repository:
 
    ```bash
-   git clone ...
+   git clone https://github.com/ramimayer/Personal_knowledge_base.git
    ```
 
 2. Open the project directory:
@@ -76,7 +76,7 @@ Install:    Git, Python, VS code
 
 ## Usage
 
-1. go to "src\personal_knowledge_base" Folder (where the source files are) and run the command:   "uv run fastapi dev .\web_service.py"  (starts the server-side)
+1. in the main folder, run the command:   "uv run server"  (starts the server-side)
 2. Open a browser, and type "http://localhost:8000/docs" - that will open a UI with the 4 available endpoints are .
 3. ALTERNITAVELY - open a web-browser and activate manually one of the 4 endpoints:
                      o   localhost:8000/save_attachments?username=< EMAIL >&email_folder=< EXTRACTED EMAIL FOLDER >_eng&save_folder=< FOLDER TO SAVE DATA >
@@ -85,7 +85,7 @@ Install:    Git, Python, VS code
                      o   localhost:8000/query_rag/< QUERY >
 4. NOTES:   a) before running "create_vectorestore", do a MANUAL check that < DOCUMENTS_FOLDER > contains valid documents (for now: "pdf" and "txt" files) 
             b) "create_vectorestore" will create a folder named < DOCUMENTS_FOLDER_qdrant_db >
-            c) before running "query_rag", make sure the environment-variable QDRANT_DB_PATH is set the full-path of the qdrant_db created by "create_vectorestore"
+            c) set PKB_QDRANT_DB_PATH (in "config.txt") to the full-path of the qdrant_db created "create_vectorestore" (otherwise - "query_rag" fails)
 
 
 ```bash
@@ -103,12 +103,12 @@ Example structure (adapt it to your repository):
 
 ```text
 YOUR_REPOSITORY/
-├── src/                 # Source code
-├── tests/               # Test files
-├── docs/                # Documentation
-├── .gitignore           # Files ignored by Git
-├── README.md            # Project documentation
-└── LICENSE              # Project license
+├── personal_knowledge_base/src/             # Source code
+├── personal_knowledge_base/tests/           # Test files
+├── .gitignore                               # Files ignored by Git
+├── README.md                                # Project documentation
+├── pyproject.toml                           # Project documentation
+└── LICENSE                                  # Project license
 ```
 
 ## Screenshots
@@ -151,15 +151,13 @@ Contributions are welcome!
 
 ## License
 
-Specify the license for this project, for example, the MIT License.
-
-If you use the MIT License, include a corresponding `LICENSE` file in the repository. Do not claim a license unless you have chosen one.
+No need for a license
 
 ## Contact
 
 Your Name
 
-- GitLab: https://......
+- GitHub: https://github.com/ramimayer/Personal_knowledge_base.git
 - Email: rami.mayer@yahoo.com
 
 ## Acknowledgments
