@@ -27,7 +27,7 @@ def delete_created_folders():
 #============================================================================================
 # @pytest.mark.test_create_vectorestore
 @pytest.mark.parametrize("docs_folder, expected", [ 
-    # (DOCS_FOLDER, True),
+    (DOCS_FOLDER, True),
 ])
 def test_create_vectorestore(docs_folder, expected):
     try:

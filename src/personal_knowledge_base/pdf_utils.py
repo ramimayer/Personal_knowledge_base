@@ -10,6 +10,7 @@ from langchain_community.document_loaders import PyPDFLoader
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 #----------------------------------------------------------------------------------------
+# convert a "pdf" file to "txt". If the "pdf" is made of scans - OCR is activated for the conversion.
 def pdf_to_txt(input_file_path: str, filename: str, output_folder: str):
     pdf_loader = PyPDFLoader(input_file_path)
     print("pdf_to_txt(): input_file_path = " + input_file_path + ", output_folder = " + output_folder)
@@ -36,6 +37,8 @@ def pdf_to_txt(input_file_path: str, filename: str, output_folder: str):
                 f.write("\n\n" + "="*40 + "\n\n")  # Add a separator between documents
 
 #----------------------------------------------------------------------------------------
+# checks if a "pdf" file can be loaded by the normal PyPDFLoader, and if not - decides
+# that its composed of image-scans, and needs OCR to be converted
 def needs_ocr(file_path: str) -> bool:
     # Check if the file is a PDF
     if not file_path.lower().endswith('.pdf'):
@@ -51,6 +54,7 @@ def needs_ocr(file_path: str) -> bool:
     return True  # OCR needed since no text was found
 
 #----------------------------------------------------------------------------------------
+# the "pdf" is composed of image-scans - so use OCR
 def ipdf2txt(pdf_path):
     # Step 1: Convert PDF pages to a list of images
     images = convert_from_path(pdf_path)

@@ -37,16 +37,16 @@ def delete_created_folders():
 #============================================================================================
 # @pytest.mark.test_save_texts
 @pytest.mark.parametrize("test_email, folder, save_folder, expected", [ 
-    # (VALID_EMAIL,       VALID_FOLDER_TEXTS,       VALID_SAVE_FOLDER_TEXTS,      True),
-    # (VALID_EMAIL,       VALID_FOLDER_TEXTS,       EMPTY_STR,                    True),
-    # (NON_VALID_EMAIL,   VALID_FOLDER_TEXTS,       EMPTY_STR,                    False),
-    # (NON_VALID_EMAIL,   NON_VALID_FOLDER,       EMPTY_STR,                      False),
-    # (NON_VALID_EMAIL,   EMPTY_STR,              EMPTY_STR,                      False),
-    # (VALID_EMAIL,       EMPTY_STR,              VALID_SAVE_FOLDER_TEXTS,      False),
-    # (VALID_EMAIL,       NON_VALID_FOLDER,       VALID_SAVE_FOLDER_TEXTS,      False),
-    # (EMPTY_STR,         EMPTY_STR,              VALID_SAVE_FOLDER_TEXTS,      False),
-    # (EMPTY_STR,         VALID_FOLDER_TEXTS,       VALID_SAVE_FOLDER_TEXTS,      False),
-    # (EMPTY_STR,         NON_VALID_FOLDER,       VALID_SAVE_FOLDER_TEXTS,      False),
+    (VALID_EMAIL,       VALID_FOLDER_TEXTS,       VALID_SAVE_FOLDER_TEXTS,      True),
+    (VALID_EMAIL,       VALID_FOLDER_TEXTS,       EMPTY_STR,                    True),
+    (NON_VALID_EMAIL,   VALID_FOLDER_TEXTS,       EMPTY_STR,                    False),
+    (NON_VALID_EMAIL,   NON_VALID_FOLDER,       EMPTY_STR,                      False),
+    (NON_VALID_EMAIL,   EMPTY_STR,              EMPTY_STR,                      False),
+    (VALID_EMAIL,       EMPTY_STR,              VALID_SAVE_FOLDER_TEXTS,      False),
+    (VALID_EMAIL,       NON_VALID_FOLDER,       VALID_SAVE_FOLDER_TEXTS,      False),
+    (EMPTY_STR,         EMPTY_STR,              VALID_SAVE_FOLDER_TEXTS,      False),
+    (EMPTY_STR,         VALID_FOLDER_TEXTS,       VALID_SAVE_FOLDER_TEXTS,      False),
+    (EMPTY_STR,         NON_VALID_FOLDER,       VALID_SAVE_FOLDER_TEXTS,      False),
 ])
 def test_save_texts(test_email, folder, save_folder, expected):
     try:

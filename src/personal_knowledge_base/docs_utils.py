@@ -21,9 +21,7 @@ def split_all_files_to_chunks(txt_folder: str, chunks_folder: str) -> list:
         loader_cls=TextLoader,
         loader_kwargs={"encoding": "utf-8"},
     )
-    print("bfr loader.load()")
     raw_documents = loader.load()
-    print("aftr loader.load()")
 
     # split the raw_documents into chunks
     text_splitter = RecursiveCharacterTextSplitter(
@@ -53,16 +51,15 @@ def convert_to_txt(folder: str, save_folder: str):
     SAVE_FOLDER = save_folder
     Path(save_folder).mkdir(parents=True, exist_ok=True)
 
-    folder_to_txt(READ_FOLDER, SAVE_FOLDER)
+    _folder_to_txt(READ_FOLDER, SAVE_FOLDER)
 
 #----------------------------------------------------------------------------------------
-def folder_to_txt(folder:str, output_folder:str):
+def _folder_to_txt(folder:str, output_folder:str):
     print("folder_to_txt(): folder = " + folder)
     pathlist = Path(folder).glob('**/*.*')
     for file_path in pathlist:
         # because path is object not string
         file_name_full_path = str(file_path)
-
 
         path_parts = file_name_full_path.split("\\")
         file_name = path_parts[len(path_parts) - 1] 
@@ -80,7 +77,6 @@ def folder_to_txt(folder:str, output_folder:str):
             personal_knowledge_base.word_utils.doc_to_txt(file_name_full_path, file_name, output_folder)
             pass
         elif (file_suffix == "txt"):
-            # Path(output_folder).copy(file_name_full_path, output_folder + "/" + file_name + ".txt")
             output_file = Path(output_folder + "/" + file_name)
             print("output_file = " + str(output_file))
             Path(file_name_full_path).copy(output_file)

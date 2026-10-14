@@ -1,8 +1,9 @@
-# from fastapi import  Path
+# This class reads the configuration-file of this project ONCE, and when another file imports the "global_config"
+# instance - it gets access to these configuration-variables
+
 import os
 from pydantic import SecretStr
 from dotenv import load_dotenv
-
 
 class PkbConfig:
     EMPTY_STRING = ""
@@ -12,6 +13,8 @@ class PkbConfig:
     _IMAP_USER_NAME = EMPTY_STRING
     _IMAP_SSL_HOST = EMPTY_STRING
     _IMAP_SSL_PORT = EMPTY_STRING
+    _MAIL_PASSWD = EMPTY_STRING
+    _API_KEY = EMPTY_STRING
     EMBEDDING_MODEL = "openai/text-embedding-3-small"
     SPARSE_EMBEDDING_MODEL = "Qdrant/bm25"
     URL = "https://openrouter.ai/api/v1"
@@ -41,11 +44,16 @@ class PkbConfig:
         return self._IMAP_SSL_PORT
 
     @property
+    def MAIL_PASSWD(self):
+        return self._MAIL_PASSWD
+
+    @property
     def openrouter_api_key(self):
-        API_KEY = SecretStr(os.getenv("OPENROUTER_API_KEY", ""))
-        if not API_KEY.get_secret_value():
-            raise RuntimeError("OPENROUTER_API_KEY is not set")
-        return API_KEY
+        return self._API_KEY
+
+    @property
+    def mail_passwd(self):
+        return self._MAIL_PASSWD
 
     def __init__(self):
         load_dotenv()
@@ -57,8 +65,21 @@ class PkbConfig:
         self._PKB_COLLECTION_NAME = read_config("PKB_COLLECTION_NAME")
         self._IMAP_USER_NAME = read_config("IMAP_USER_NAME")
         self._IMAP_SSL_HOST = read_config("IMAP_SSL_HOST")
-        self._IMAP_SSL_PORT = read_config("IMAP_SSL_PORT")
+        self._IMAP_SSL_PORT = read_config("IMAP_SSL_PORT") 
+        self._MAIL_PASSWD = SecretStr(os.getenv("MAIL_SERVER_PASSWD", ""))
+        self._API_KEY = SecretStr(os.getenv("OPENROUTER_API_KEY", ""))
 
+        if not self._API_KEY.get_secret_value():
+            raise RuntimeError("OPENROUTER_API_KEY is not set")
+        
+        if not self.MAIL_PASSWD.get_secret_value():
+            raise RuntimeError("MAIL_SERVER_PASSWD is not set")
+
+        if not os.path.exists(self._PKB_DATA_FOLDER):
+            raise RuntimeError("The folder where messages should save DOESN'T exist! " + self._PKB_DATA_FOLDER)
+
+        if not os.path.exists(self._PKB_QDRANT_DB_PATH):
+            raise RuntimeError("The QDRANT_DB folder DOESN'T exist! " + self._PKB_QDRANT_DB_PATH)
 
 
                 
@@ -70,9 +91,7 @@ def read_config(variable: str) -> str:
         if line in ['\n', '\r\n']:
             continue
         s = line.split()
-        print("aftr split, s[0] = " + s[0] + ", s[1] = " + s[1])
         if (s[0] == variable):
-            print("assigning..  _PKB_DATA_FOLDER = " + s[1])
             return s[1]
 
 

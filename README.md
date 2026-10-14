@@ -1,11 +1,11 @@
 # Personal  Knowledge  Base
 
-This Project lets you extract emails from Folders in your email-account, and from These documents (Texts + attachments) builds a RAG System that can answer Questions regarding the subjects contained in These folders
+This Project lets you extract emails from Folders in your email-account, and from These documents (Texts + attachments) builds a RAG System that can answer Questions regarding the subjects contained in These folders.
 
 ## Table of Contents
 
 - [Features](#features)
-- [Technologies Used](OCR, RAG)
+- [Technologies Used](OCR, RAG)(#technologies-used)
 - [Getting Started](#getting-started)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -44,7 +44,7 @@ This Project lets you extract emails from Folders in your email-account, and fro
 
 ### Prerequisites
 
-Install:    Git, Python, VS code
+Install:    Git, Python, VS code, uv
 
 ## Installation
 
@@ -89,7 +89,7 @@ Install:    Git, Python, VS code
 ```
 4. NOTES: 
 ```bash
-   a) before running "create_vectorestore", do a MANUAL check that < DOCUMENTS_FOLDER > contains valid documents (for now: "pdf" and "txt" files) 
+   a) before running "create_vectorestore", do a MANUAL check that < DOCUMENTS_FOLDER > contains valid documents (for now: "pdf", ".docx", "txt" files) 
    b) "create_vectorestore" will create a folder named < DOCUMENTS_FOLDER_qdrant_db >
    c) set PKB_QDRANT_DB_PATH (in "config.txt") to the full-path of the qdrant_db created "create_vectorestore" (otherwise - "query_rag" fails)
 ```

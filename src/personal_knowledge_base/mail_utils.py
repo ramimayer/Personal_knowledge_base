@@ -3,7 +3,7 @@ import personal_knowledge_base.config
 from pathlib import Path
 from imap_tools import MailBox
 from pydantic import SecretStr
-from dotenv import load_dotenv
+from personal_knowledge_base.config import global_config
 
 #----------------------------------------------------------------------------------------
 # establish a connection with the mail-serever, and return a handle to the email-folder
@@ -121,11 +121,7 @@ def save_texts(username: str,
                email_folder: str,
                save_folder: str) -> bool:
 
-    load_dotenv()
-    MAIL_PASSWD = SecretStr(os.getenv("MAIL_SERVER_PASSWD", ""))
-    if not MAIL_PASSWD.get_secret_value():
-        raise RuntimeError("MAIL_SERVER_PASSWD is not set")   
-    mail_password = MAIL_PASSWD.get_secret_value()
+    mail_password = global_config.mail_passwd.get_secret_value()
 
     try:
         with MailBox('imap.mail.yahoo.com').login(username, mail_password, initial_folder=email_folder) as mb:

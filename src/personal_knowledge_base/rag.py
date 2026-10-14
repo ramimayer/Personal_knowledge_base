@@ -39,7 +39,6 @@ def produce_vectorestore(documents: list, docs_folder: str) -> str:
 def _create_retriever():
     sparse_embeddings = FastEmbedSparse(model_name=global_config.SPARSE_EMBEDDING_MODEL)
 
-    # API_KEY = s.openrouter_api_key
     API_KEY = global_config.openrouter_api_key
     embeddings = OpenAIEmbeddings(api_key=API_KEY, base_url=global_config.URL, model=global_config.EMBEDDING_MODEL)
 
@@ -52,7 +51,6 @@ def _create_retriever():
         embedding=embeddings,
         sparse_embedding=sparse_embeddings,
         collection_name=global_config._PKB_COLLECTION_NAME,
-        # path=s.QDRANT_DB_PATH,
         path=global_config.PKB_QDRANT_DB_PATH,
         retrieval_mode=RetrievalMode.HYBRID,
     )

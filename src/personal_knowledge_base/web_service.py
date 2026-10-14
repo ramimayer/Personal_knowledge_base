@@ -1,8 +1,9 @@
+# This file contains the 4 endpoints of the service
+#--------------------------------------------------------
+
 import os
 
-from dotenv import load_dotenv
 from fastapi import FastAPI, Path
-import personal_knowledge_base.config 
 from personal_knowledge_base.config import global_config
 import personal_knowledge_base.mail_utils
 import personal_knowledge_base.docs_utils
@@ -13,14 +14,11 @@ import personal_knowledge_base.rag
 
 import uvicorn
 
-
-
 class ServerData(BaseModel):
     username: str
     email_folder: str
     save_folder: str
 
-# global_config = personal_knowledge_base.config.PkbConfig()
 
 rag = FastAPI()
 
@@ -34,7 +32,6 @@ def save_attachments(username: str = Query(..., description="email of the user")
     print("save_attachments():  config PKB_DATA_FOLDER = " + global_config.PKB_DATA_FOLDER)
 
     # check validity of config-variables
-    # pkb_data_folder = personal_knowledge_base.config.read_config("PKB_DATA_FOLDER")
     if not global_config.PKB_DATA_FOLDER:
         return {"message": "PKB_DATA_FOLDER is not set", "rc": False}
     attachments_save_folder = global_config.PKB_DATA_FOLDER + "/" + save_folder
@@ -48,7 +45,6 @@ def save_attachments(username: str = Query(..., description="email of the user")
             return {"message": "Illegal folder-name!   " + save_folder}
 
     # call mail_utils function to do the job, and return the appropriate message       
-    load_dotenv()
     success = personal_knowledge_base.mail_utils.save_attachments(username, email_folder, attachments_save_folder)
     if not success:
          msg = "Failiure to connect!  username = " + username  + "   email_folder = " +  email_folder
@@ -60,16 +56,9 @@ def save_attachments(username: str = Query(..., description="email of the user")
 @rag.get("/save_texts")
 def save_texts(server_data: ServerData = Depends()):
     print("web_service: save_texts()")
-    print("server_data = {" + server_data.username + ",  " + server_data.email_folder + ",  " + server_data.save_folder)
 
-    pkb_data_folder = personal_knowledge_base.config.read_config("PKB_DATA_FOLDER")
-    if not pkb_data_folder:
-        raise RuntimeError("PKB_DATA_FOLDER is not set")
+    pkb_data_folder = global_config.PKB_DATA_FOLDER
     messages_save_folder = pkb_data_folder + "/" + server_data.save_folder
-    if not os.path.exists(pkb_data_folder):
-        raise RuntimeError("The folder where messages should save DOESN'T exist! " + pkb_data_folder)
-
-    load_dotenv()  
     success = personal_knowledge_base.mail_utils.save_texts(server_data.username, server_data.email_folder, messages_save_folder)
     if (success == True):
         return {"message": "Saving texts!"}
@@ -93,12 +82,8 @@ def query_rag(query: Annotated[str, Path(min_length=1)]):
 @rag.get("/create_vectorestore/{docs_folder}")
 def create_vectorestore(docs_folder: Annotated[str, Path(min_length=1)]):
     print("web_service: create_vectorestore()" + "docs_folder = " + docs_folder)
-    load_dotenv()
 
-    pkb_data_folder = personal_knowledge_base.config.read_config("PKB_DATA_FOLDER")
-    if not pkb_data_folder:
-        raise RuntimeError("PKB_DATA_FOLDER is not set")
-    docs_folder = pkb_data_folder + "/" + docs_folder
+    docs_folder = global_config.PKB_DATA_FOLDER + "/" + docs_folder
     txt_folder = docs_folder + "_txt"
     chunks_folder = docs_folder + "_chunks"
 
