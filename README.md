@@ -118,15 +118,11 @@ Add screenshots or GIFs if they help explain your project.
 Example:
 
 ```markdown
-![My Imag](./User_context.png)
 
 ```
 
-<p>
-    <img src="./User_context.png" width="1141" height="644" />
-</p>
-
-![My Im#g#](./screenshots/User_context.jpg)
+![User Context](./screenshots/User_context.jpg)
+![Software Context](./screenshots/Software_context.png)
 
 
 Make sure the image exists at the specified path in your repository.
