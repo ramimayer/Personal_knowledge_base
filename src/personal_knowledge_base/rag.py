@@ -1,6 +1,7 @@
 import os
-import personal_knowledge_base.config
-from dotenv import load_dotenv
+# import personal_knowledge_base.config
+from personal_knowledge_base.config import global_config
+# from dotenv import load_dotenv
 from langchain_openrouter import ChatOpenRouter
 from langchain_openai import OpenAIEmbeddings
 from langchain_qdrant import QdrantVectorStore, FastEmbedSparse, RetrievalMode
@@ -12,44 +13,21 @@ from langchain_core.output_parsers import StrOutputParser
 
 from functools import cache
 
-class static_vars:
-    EMBEDDING_MODEL = "openai/text-embedding-3-small"
-    SPARSE_EMBEDDING_MODEL = "Qdrant/bm25"
-    COLLECTION_NAME = "company_simulator_docs"
-    URL = "https://openrouter.ai/api/v1"
-
-    @property
-    def openrouter_api_key(self):
-        API_KEY = SecretStr(os.getenv("OPENROUTER_API_KEY", ""))
-        if not API_KEY.get_secret_value():
-            raise RuntimeError("OPENROUTER_API_KEY is not set")
-        return API_KEY
-
-    @property
-    def QDRANT_DB_PATH(self):
-        return personal_knowledge_base.config.read_config("PKB_QDRANT_DB_PATH")
-
-    def __init__(self):
-        load_dotenv()
-        self.COLLECTION_NAME = personal_knowledge_base.config.read_config("PKB_COLLECTION_NAME")
-
 #----------------------------------------------------------------------------------------
 # params: documents -  a list of documents, chunks from the texts, ready for QdrantVectorStore
 #         docs_folder - the folder containing the original-documents
 # return: the path to the QdrantVectorStore database
 def produce_vectorestore(documents: list, docs_folder: str) -> str:
-    s = static_vars()
-    sparse_embeddings = FastEmbedSparse(model_name=s.SPARSE_EMBEDDING_MODEL)
+    sparse_embeddings = FastEmbedSparse(model_name=global_config.SPARSE_EMBEDDING_MODEL)
+    API_KEY = global_config.openrouter_api_key
 
-    API_KEY = s.openrouter_api_key
-
-    embeddings = OpenAIEmbeddings(api_key=API_KEY, base_url=s.URL, model=s.EMBEDDING_MODEL)
+    embeddings = OpenAIEmbeddings(api_key=API_KEY, base_url=global_config.URL, model=global_config.EMBEDDING_MODEL)
     qdrant_db_path = docs_folder + "_qdrant_db"
     vectorstore = QdrantVectorStore.from_documents(
         documents=documents,
         embedding=embeddings,
         sparse_embedding=sparse_embeddings,
-        collection_name=s.COLLECTION_NAME,
+        collection_name=global_config.PKB_COLLECTION_NAME,
         path=qdrant_db_path,
         retrieval_mode=RetrievalMode.HYBRID,
     )
@@ -59,23 +37,23 @@ def produce_vectorestore(documents: list, docs_folder: str) -> str:
 #----------------------------------------------------------------------------------------
 @cache
 def _create_retriever():
-    s = static_vars()
+    sparse_embeddings = FastEmbedSparse(model_name=global_config.SPARSE_EMBEDDING_MODEL)
 
-    sparse_embeddings = FastEmbedSparse(model_name=s.SPARSE_EMBEDDING_MODEL)
+    # API_KEY = s.openrouter_api_key
+    API_KEY = global_config.openrouter_api_key
+    embeddings = OpenAIEmbeddings(api_key=API_KEY, base_url=global_config.URL, model=global_config.EMBEDDING_MODEL)
 
-    API_KEY = s.openrouter_api_key
-    embeddings = OpenAIEmbeddings(api_key=API_KEY, base_url=s.URL, model=s.EMBEDDING_MODEL)
-
-    print("\ncreate_retriever(): QDRANT_DB_PATH = " + s.QDRANT_DB_PATH + "\n")
-    if not os.path.exists(s.QDRANT_DB_PATH):
+    print("\ncreate_retriever(): QDRANT_DB_PATH = " + global_config.PKB_QDRANT_DB_PATH + "\n")
+    if not os.path.exists(global_config.PKB_QDRANT_DB_PATH):
         return API_KEY, None
 
     # step 2:   Vektor-Store erstellen
     vectorstore = QdrantVectorStore.from_existing_collection(
         embedding=embeddings,
         sparse_embedding=sparse_embeddings,
-        collection_name=s.COLLECTION_NAME,
-        path=s.QDRANT_DB_PATH,
+        collection_name=global_config._PKB_COLLECTION_NAME,
+        # path=s.QDRANT_DB_PATH,
+        path=global_config.PKB_QDRANT_DB_PATH,
         retrieval_mode=RetrievalMode.HYBRID,
     )
 

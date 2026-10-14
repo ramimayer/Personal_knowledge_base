@@ -79,13 +79,20 @@ Install:    Git, Python, VS code
 1. in the main folder, run the command:   "uv run server"  (starts the server-side)
 2. Open a browser, and type "http://localhost:8000/docs" - that will open a UI with the 4 available endpoints are .
 3. ALTERNITAVELY - open a web-browser and activate manually one of the 4 endpoints:
-                     o   localhost:8000/save_attachments?username=< EMAIL >&email_folder=< EXTRACTED EMAIL FOLDER >_eng&save_folder=< FOLDER TO SAVE DATA >
-                     o   localhost:8000/save_texts?username=< EMAIL >&email_folder=< EXTRACTED EMAIL FOLDER >&save_folder=< FOLDER TO SAVE DATA >
-                     o   localhost:8000/create_vectorestore/< DOCUMENTS_FOLDER >   
-                     o   localhost:8000/query_rag/< QUERY >
-4. NOTES:   a) before running "create_vectorestore", do a MANUAL check that < DOCUMENTS_FOLDER > contains valid documents (for now: "pdf" and "txt" files) 
-            b) "create_vectorestore" will create a folder named < DOCUMENTS_FOLDER_qdrant_db >
-            c) set PKB_QDRANT_DB_PATH (in "config.txt") to the full-path of the qdrant_db created "create_vectorestore" (otherwise - "query_rag" fails)
+```bash
+# Endpoints
+   o   localhost:8000/save_attachments?username=< EMAIL >&email_folder=< EXTRACTED EMAIL FOLDER >_eng&save_folder=< FOLDER TO SAVE DATA >
+   o   localhost:8000/save_texts?username=< EMAIL >&email_folder=< EXTRACTED EMAIL FOLDER >&save_folder=< FOLDER TO SAVE DATA >
+   o   localhost:8000/create_vectorestore/< DOCUMENTS_FOLDER >   
+   o   localhost:8000/query_rag/< QUERY >
+
+```
+4. NOTES: 
+```bash
+   a) before running "create_vectorestore", do a MANUAL check that < DOCUMENTS_FOLDER > contains valid documents (for now: "pdf" and "txt" files) 
+   b) "create_vectorestore" will create a folder named < DOCUMENTS_FOLDER_qdrant_db >
+   c) set PKB_QDRANT_DB_PATH (in "config.txt") to the full-path of the qdrant_db created "create_vectorestore" (otherwise - "query_rag" fails)
+```
 
 
 ```bash
@@ -105,6 +112,7 @@ Example structure (adapt it to your repository):
 YOUR_REPOSITORY/
 ├── personal_knowledge_base/src/             # Source code
 ├── personal_knowledge_base/tests/           # Test files
+├── personal_knowledge_base/screenshots/     # images for this Readme file
 ├── .gitignore                               # Files ignored by Git
 ├── README.md                                # Project documentation
 ├── pyproject.toml                           # Project documentation

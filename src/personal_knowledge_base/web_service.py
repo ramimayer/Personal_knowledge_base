@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI, Path
 import personal_knowledge_base.config 
+from personal_knowledge_base.config import global_config
 import personal_knowledge_base.mail_utils
 import personal_knowledge_base.docs_utils
 from pydantic import BaseModel
@@ -19,6 +20,8 @@ class ServerData(BaseModel):
     email_folder: str
     save_folder: str
 
+# global_config = personal_knowledge_base.config.PkbConfig()
+
 rag = FastAPI()
 
 # usage:   http://localhost:8000/save_attachments?username=rami.mayer@yahoo.com&email_folder=Simulator_2015_eng&save_folder=att
@@ -27,12 +30,15 @@ def save_attachments(username: str = Query(..., description="email of the user")
                      email_folder: str = Query(..., description="mail-folder to process"),
                      save_folder: str = Query(..., description="mail-folder to process")
                      ):
+
+    print("save_attachments():  config PKB_DATA_FOLDER = " + global_config.PKB_DATA_FOLDER)
+
     # check validity of config-variables
-    pkb_data_folder = personal_knowledge_base.config.read_config("PKB_DATA_FOLDER")
-    if not pkb_data_folder:
+    # pkb_data_folder = personal_knowledge_base.config.read_config("PKB_DATA_FOLDER")
+    if not global_config.PKB_DATA_FOLDER:
         return {"message": "PKB_DATA_FOLDER is not set", "rc": False}
-    attachments_save_folder = pkb_data_folder + "/" + save_folder
-    if not os.path.exists(pkb_data_folder):
+    attachments_save_folder = global_config.PKB_DATA_FOLDER + "/" + save_folder
+    if not os.path.exists(global_config.PKB_DATA_FOLDER):
         return {"message": "The data-folder  DOESN'T exist! ", "rc": False}
 
     # sanity input-check

@@ -1,8 +1,5 @@
-# from personal_knowledge_base.web_service import rag
 import pytest
 import os
-# from pathlib import Path
-# from dotenv import load_dotenv
 import shutil
 import personal_knowledge_base.config 
 
